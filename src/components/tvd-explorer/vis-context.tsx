@@ -30,11 +30,11 @@ function VisProvider({
   const svgDimensions = useResizeObserver(svgRef);
 
   // Check if the children is a ReactElement and its type is 'svg'
-  if (!React.isValidElement(children) || children.type !== "svg") {
-    throw new Error(
-      "The immediate child of VisProvider should always be an SVG element."
-    );
-  }
+  // if (!React.isValidElement(children) || children.type !== "svg") {
+  //   throw new Error(
+  //     "The immediate child of VisProvider should always be an SVG element."
+  //   );
+  // }
 
   if (!svgRef || !containerRef || !svgDimensions || !containerDimensions)
     return null;

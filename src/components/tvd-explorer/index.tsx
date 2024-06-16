@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-import { Pause, PlayIcon } from 'lucide-react'
+import { Pause, PlayIcon } from "lucide-react";
 
 import { VisProvider } from "./vis-context";
 import TVDHeader from "./tvd-header";
@@ -98,7 +98,12 @@ export default function TVDExplorer() {
           )}
         </button>
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
-          <svg className="w-full h-[600px]" height={600} width={dimensions.width} ref={svgRef}>
+          <svg
+            className="w-full h-[600px]"
+            height={600}
+            width={dimensions.width}
+            ref={svgRef}
+          >
             <VerticalGrid />
             <BarChart
               data={[
@@ -128,8 +133,15 @@ export default function TVDExplorer() {
               {currentYear}
             </text>
           </svg>
+          {data && data[currentYear] && (
+            <TVDTimeline
+              data={data}
+              currentYear={currentYear}
+              setCurrentYear={setCurrentYear}
+              mooresLawData={mooresLawData}
+            />
+          )}
         </VisProvider>
-        <TVDTimeline />
       </div>
     </NoSSR>
   );

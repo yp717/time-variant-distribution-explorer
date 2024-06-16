@@ -8,7 +8,7 @@ const VerticalGrid = () => {
   // TODO: remove type assertion
   const { width, height } = svgDimensions as DOMRect;
 
-  const xScale = d3.scaleLinear().domain([1970, 2024]).range([0, width]);
+  const xScale = d3.scaleLinear().domain([1970, 2019]).range([0, width]);
   const ticks = xScale.ticks();
 
   return (

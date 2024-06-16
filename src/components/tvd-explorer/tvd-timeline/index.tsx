@@ -40,7 +40,7 @@ export default function TVDTimeline({
     {} as Record<string, number>
   );
 
-  const xDomain = [1970, 2024];
+  const xDomain = [1970, 2019];
   const xRange = [0, width];
 
   const xScale = d3.scaleLinear().domain(xDomain).range(xRange);
@@ -88,27 +88,27 @@ export default function TVDTimeline({
               />
             );
           })}
-          <g>
-            {hovered ? (
-              <circle
-                cx={currentYearPosition}
-                cy={4.5}
-                r={8}
-                className="stroke-neutral-700 fill-neutral-700"
-                fill="currentColor"
-              />
-            ) : (
-              <line
-                x1={currentYearPosition}
-                y1={0}
-                x2={currentYearPosition}
-                y2={9}
-                className="stroke-neutral-700"
-                stroke="currentColor"
-                strokeWidth={2}
-              />
-            )}
-          </g>
+        </g>
+        <g>
+          {hovered ? (
+            <circle
+              cx={currentYearPosition}
+              cy={4.5}
+              r={8}
+              className="stroke-neutral-700 fill-neutral-700"
+              fill="currentColor"
+            />
+          ) : (
+            <line
+              x1={currentYearPosition}
+              y1={0}
+              x2={currentYearPosition}
+              y2={9}
+              className="stroke-neutral-700"
+              stroke="currentColor"
+              strokeWidth={2}
+            />
+          )}
         </g>
       </svg>
     </div>

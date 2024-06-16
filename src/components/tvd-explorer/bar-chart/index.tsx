@@ -21,7 +21,10 @@ export default function BarChart({ data, barThickness }: IBarChartProps) {
 
   // not worth memoizing this since data changes every year
   const xDomain = [0, d3.max(data, (d) => d.transistors)] as [number, number];
-  const xScale = d3.scaleLinear().domain(xDomain).range([0, width]);
+  const xScale = d3
+    .scaleLinear()
+    .domain(xDomain)
+    .range([0, width * 0.8]);
 
   const yScale = React.useMemo(
     () =>

@@ -1,8 +1,8 @@
 import * as d3 from "d3";
 
 export default function mooresLaw(): Record<number, number> {
-  const rangeStart = 1972;
-  const rangeEnd = 2024;
+  const rangeStart = 1971;
+  const rangeEnd = 2019;
   const startValue = 1000;
 
   return d3.range(rangeStart, rangeEnd).reduce(

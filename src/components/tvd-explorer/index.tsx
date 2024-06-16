@@ -15,6 +15,7 @@ import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
 import BarChart from "./bar-chart";
 import TVDMenu from "./tvd-menu";
+import AreaChart from "./area-chart";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.
@@ -30,7 +31,7 @@ export default function TVDExplorer() {
   );
   const [designerFilter, setDesignerFilter] = React.useState<string>("all");
 
-  const dimensions = useResizeObserver(containerRef);
+  const dimensions = useResizeObserver(svgRef);
   const [paused, setPaused] = React.useState(false);
   const data = useData(typeFilter);
   const mooresLawData = React.useMemo(() => mooresLaw(), []);
@@ -51,7 +52,7 @@ export default function TVDExplorer() {
         return year + 1;
       });
 
-      if (currentYear >= 2024) {
+      if (currentYear >= 2019) {
         interval.stop();
       }
     }, 2000);
@@ -73,27 +74,27 @@ export default function TVDExplorer() {
 
   const xScale = d3
     .scaleLinear()
-    .domain([1970, 2024])
+    .domain([1970, 2019])
     .range([0, dimensions.width]);
 
   return (
     <NoSSR
       fallback={
-        <div className="w-full px-6 py-6 mx-auto text-gray-900 bg-white h-[600px] flex items-center justify-center">
+        <div className="aspect-video w-full px-6 py-6 mx-auto text-gray-900 bg-white h-full flex items-center justify-center">
           <p>Loading...</p>
         </div>
       }
     >
       <div
-        className="w-full h-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+        className="aspect-video w-full h-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
         ref={containerRef}
       >
         <TVDHeader />
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
           <svg
-            className="w-full h-[600px]"
-            height={600}
-            width={dimensions.width}
+            className="w-full h-full"
+            // height={dimensions.height}
+            // width={dimensions.width}
             ref={svgRef}
           >
             <VerticalGrid />
@@ -116,6 +117,7 @@ export default function TVDExplorer() {
               ]}
               barThickness={30}
             />
+            {/* <AreaChart data={data} mooresLawData={mooresLawData} /> */}
           </svg>
           {data && data[currentYear] && (
             <TVDTimeline

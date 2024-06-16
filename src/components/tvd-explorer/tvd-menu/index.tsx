@@ -25,7 +25,7 @@ export default function TVDMenu({
       {/* TODO: turn each of the controls in the menu into a component */}
       <div className="flex gap-4 items-center justify-center">
         <PlayButton paused={paused} setPaused={setPaused} />
-        <p className="font-light text-sm text-neutral-800 dark:text-neutral-100">{`${currentYear} / ${2020}`}</p>
+        <p className="font-light text-sm text-neutral-800 dark:text-neutral-100">{`${currentYear} / ${2019}`}</p>
       </div>
       <div className="flex gap-4 items-center justify-center">
         <AutoPlayButton autoPlay={autoPlay} setAutoPlay={setAutoPlay} />

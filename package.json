@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "d3": "^7.9.0",
     "framer-motion": "^11.2.10",
+    "lucide-react": "^0.395.0",
     "next": "14.2.4",
     "next-themes": "^0.3.0",
     "react": "^18",
@@ -17,6 +19,7 @@
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

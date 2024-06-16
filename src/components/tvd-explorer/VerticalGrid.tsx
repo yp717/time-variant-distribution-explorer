@@ -20,7 +20,8 @@ const VerticalGrid = () => {
           y1={0}
           x2={xScale(tick)}
           y2={height}
-          stroke="lightgray"
+          className="stroke-neutral-300 dark:stroke-neutral-800"
+          stroke="currentColor"
           strokeWidth={1}
         />
       ))}

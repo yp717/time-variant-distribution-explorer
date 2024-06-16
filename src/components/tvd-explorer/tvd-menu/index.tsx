@@ -4,7 +4,6 @@ import * as React from "react";
 
 import PlayButton from "./play-button";
 import FullScreenButton from "./fullscreen-button";
-import AutoPlayButton from "./autoplay-button";
 
 interface ITVDMenuProps {
   paused: boolean;
@@ -27,13 +26,8 @@ export default function TVDMenu({
         <PlayButton paused={paused} setPaused={setPaused} />
         <p className="font-light text-sm text-neutral-800 dark:text-neutral-100">{`${currentYear} / ${2019}`}</p>
       </div>
-      <div className="flex gap-4 items-center justify-center">
-        <AutoPlayButton autoPlay={autoPlay} setAutoPlay={setAutoPlay} />
-        <FullScreenButton
-          fullScreen={fullScreen}
-          setFullScreen={setFullScreen}
-        />
-      </div>
+
+      <FullScreenButton fullScreen={fullScreen} setFullScreen={setFullScreen} />
     </div>
   );
 }

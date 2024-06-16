@@ -28,17 +28,16 @@ export default function TVDTimeline({
   const dimensions = useResizeObserver(svgRef);
   const { width, height } = dimensions;
 
-  const transistorsByYear = Object.entries(data).reduce(
-    (acc, [year, entries]) => {
-      const maxInYear = entries.reduce(
-        (max, item) => Math.max(max, item.transistors),
-        0
-      );
-      acc[year] = maxInYear;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const transistorsByYear = data
+    ? Object.entries(data).reduce((acc, [year, entries]) => {
+        const maxInYear = entries.reduce(
+          (max, item) => Math.max(max, item.transistors),
+          0
+        );
+        acc[year] = maxInYear;
+        return acc;
+      }, {} as Record<string, number>)
+    : {};
 
   const xDomain = [1970, 2019];
   const xRange = [0, width];
@@ -74,6 +73,11 @@ export default function TVDTimeline({
         <g>
           {Object.keys(mooresLawData).map((year, index) => {
             const yearNumber = Number(year);
+
+            if (yearNumber >= 2019) {
+              return null;
+            }
+
             const isBehind =
               transistorsByYear[year] < mooresLawData[yearNumber];
             return (

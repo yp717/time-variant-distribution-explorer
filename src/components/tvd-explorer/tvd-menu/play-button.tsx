@@ -1,4 +1,5 @@
 import SimpleTooltip from "@/components/tooltip/simple-tooltip";
+import { useKeyPress } from "@/hooks/useKeyboardShortcut";
 import { Pause, PlayIcon } from "lucide-react";
 
 interface IPlayButtonProps {
@@ -8,6 +9,8 @@ interface IPlayButtonProps {
 
 // TODO: props on these component should be extendible and type safe
 export default function PlayButton({ paused, setPaused }: IPlayButtonProps) {
+  useKeyPress(() => setPaused(!paused), ["KeyK"]);
+
   return (
     <SimpleTooltip content="Play">
       <button className="cursor-pointer" onClick={() => setPaused(!paused)}>

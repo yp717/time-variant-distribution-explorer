@@ -3,8 +3,6 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-import { Pause, PlayIcon } from "lucide-react";
-
 import { VisProvider } from "./vis-context";
 import TVDHeader from "./tvd-header";
 import TVDTimeline from "./tvd-timeline";
@@ -15,7 +13,7 @@ import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
 import BarChart from "./bar-chart";
 import TVDMenu from "./tvd-menu";
-import AreaChart from "./area-chart";
+import TVDFilter from "./tvd-header/filter";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.
@@ -34,6 +32,7 @@ export default function TVDExplorer() {
   const dimensions = useResizeObserver(svgRef);
   const [paused, setPaused] = React.useState(false);
   const data = useData(typeFilter);
+
   const mooresLawData = React.useMemo(() => mooresLaw(), []);
   const [currentYear, setCurrentYear] = React.useState(1970);
 
@@ -45,56 +44,64 @@ export default function TVDExplorer() {
 
     const interval = d3.interval(() => {
       setCurrentYear((year) => {
-        if (!data || !data[year + 1]) {
+        if (year >= 2019 || !data || !data[year + 1]) {
           interval.stop();
+          return year;
         }
 
         return year + 1;
       });
-
-      if (currentYear >= 2019) {
-        interval.stop();
-      }
     }, 2000);
 
     return () => interval.stop();
-  }, [data, paused, currentYear]);
+  }, [data, paused, setPaused]);
 
-  // TODO: implement filters
-  // const designerOptions = [
-  //   "all",
-  //   ...Array.from(
-  //     new Set(
-  //       Object.values(data ?? {})
-  //         .flat()
-  //         .map((d) => d.designer)
-  //     )
-  //   ),
-  // ];
-
-  const xScale = d3
-    .scaleLinear()
-    .domain([1970, 2019])
-    .range([0, dimensions.width]);
+  const designerOptions = [
+    "all",
+    ...Array.from(
+      new Set(
+        Object.values(data ?? {})
+          .flat()
+          .map((d) => d.designer)
+      )
+    ),
+  ]
+    .filter((d) => d)
+    .sort();
 
   return (
     <NoSSR
       fallback={
-        <div className="aspect-video w-full px-6 py-6 mx-auto text-gray-900 bg-white h-full flex items-center justify-center">
+        <div className="w-full px-6 py-6 mx-auto text-gray-900 bg-white h-full flex items-center justify-center">
           <p>Loading...</p>
         </div>
       }
     >
-      <div
-        className="aspect-video w-full h-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
-        ref={containerRef}
-      >
-        <TVDHeader />
+      <div className="aspect-video w-full h-full" ref={containerRef}>
+        <div className="w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 flex items-center justify-between">
+          <div className="flex gap-4">
+            <TVDFilter
+              label="Filter by Type"
+              options={["All", "CPU", "GPU"]}
+              value={typeFilter}
+              onChange={(value) =>
+                setTypeFilter(value as "all" | "CPU" | "GPU")
+              }
+            />
+            <TVDFilter
+              label="Filter by Designer"
+              options={designerOptions}
+              value={designerFilter}
+              onChange={(value) => setDesignerFilter(value)}
+            />
+          </div>
+        </div>
+
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
           <svg
-            className="w-full h-full"
-            // height={dimensions.height}
-            // width={dimensions.width}
+            className="w-full h-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+            height={dimensions.height}
+            width={dimensions.width}
             ref={svgRef}
           >
             <VerticalGrid />
@@ -119,15 +126,13 @@ export default function TVDExplorer() {
             />
             {/* <AreaChart data={data} mooresLawData={mooresLawData} /> */}
           </svg>
-          {data && data[currentYear] && (
-            <TVDTimeline
-              // TODO: remove typecast to any
-              data={data as any}
-              currentYear={currentYear}
-              setCurrentYear={setCurrentYear}
-              mooresLawData={mooresLawData}
-            />
-          )}
+
+          <TVDTimeline
+            data={data as any}
+            currentYear={currentYear}
+            setCurrentYear={setCurrentYear}
+            mooresLawData={mooresLawData}
+          />
 
           <TVDMenu
             paused={paused}

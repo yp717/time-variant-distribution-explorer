@@ -63,7 +63,7 @@ export default function Bar({
       />
       {renderWidth >= MIN_BAR_WIDTH_FOR_TEXT && (
         <text
-          className="font-sans text-sm fill-black"
+          className="font-sans text-sm fill-neutral-100 dark:fill-black"
           style={{ alignmentBaseline: "middle", textAnchor: "start" }}
           x={10}
           y={thickness / 2}
@@ -72,7 +72,7 @@ export default function Bar({
         </text>
       )}
       <text
-        className="font-sans text-sm fill-black"
+        className="font-sans text-sm fill-black dark:fill-neutral-100"
         style={{ alignmentBaseline: "middle", textAnchor: "start" }}
         y={thickness / 2}
         x={renderWidth + 15}

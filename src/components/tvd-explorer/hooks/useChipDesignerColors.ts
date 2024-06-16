@@ -3,8 +3,74 @@
 import * as React from "react";
 
 import * as d3 from "d3";
+import { useTheme } from "next-themes";
+
+// This color palette was taken from the IBM Carbon Design System
+// https://carbondesignsystem.com/data-visualization/color-palettes/
+const darkModePalette = [
+  "#8a3ffc",
+  // 02. Cyan 40
+  "#33b1ff",
+  // 03. Teal 60
+  "#007d79",
+  // 04. Magenta 40
+  "#ff7eb6",
+  // 05. Red 50
+  "#fa4d56",
+  // 06. Red 10
+  "#fff1f1",
+  // 07. Green 30
+  "#6fdc8c",
+  // 08. Blue 50
+  "#4589ff",
+  // 09. Magenta 60
+  "#d12771",
+  // 10. Yellow 40
+  "#d2a106",
+  // 11. Teal 40
+  "#08bdba",
+  // 12. Cyan 20
+  "#bae6ff",
+  // 13. Orange 60
+  "#ba4e00",
+  // 14. Purple 30
+  "#d4bbff",
+];
+
+const lightModePalette = [
+  // 01. Purple 70
+  "#6929c4",
+  // 02. Cyan 50
+  "#1192e8",
+  // 03. Teal 70
+  "#005d5d",
+  // 04. Magenta 70
+  "#9f1853",
+  // 05. Red 50
+  "#fa4d56",
+  // 06. Red 90
+  "#570408",
+  // 07. Green 60
+  "#198038",
+  // 08. Blue 80
+  "#002d9c",
+  // 09. Magenta 50
+  "#ee538b",
+  // 10. Yellow 50
+  "#b28600",
+  // 11. Teal 50
+  "#009d9a",
+  // 12. Cyan 90
+  "#012749",
+  // 13. Orange 70
+  "#8a3800",
+  // 14. Purple 50
+  "#a56eff",
+];
 
 export default function useChipDesignerColors() {
+  const { theme } = useTheme();
+
   const color = React.useMemo(
     () =>
       d3
@@ -28,26 +94,8 @@ export default function useChipDesignerColors() {
           "Toshiba",
           "Moore",
         ])
-        .range([
-          "#009933",
-          "#0091BD",
-          "#A3AAAE",
-          "#d30909",
-          "#F4ABAA",
-          "#FA0505",
-          "#1F70C1",
-          "#0171C5",
-          "#7FBA02",
-          "#008DD2",
-          "#14149F",
-          "#77B900",
-          "#F70000",
-          "#034EA1",
-          "#7F7F7F",
-          "#FF0000",
-          "#D92AAD",
-        ]),
-    []
+        .range(theme === "dark" ? darkModePalette : lightModePalette),
+    [theme]
   );
 
   return color;

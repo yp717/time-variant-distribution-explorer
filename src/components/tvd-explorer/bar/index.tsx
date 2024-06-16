@@ -18,6 +18,8 @@ interface IBarProps {
   color: string;
 }
 
+const MIN_BAR_WIDTH_FOR_TEXT = 200; // Minimum width required to display text
+
 export default function Bar({
   data,
   y,
@@ -51,15 +53,24 @@ export default function Bar({
 
   return (
     <g transform={`translate(${renderX}, ${renderY})`}>
-      <rect x={0} y={0} width={renderWidth} height={thickness} fill={color} />
-      <text
-        className="font-sans text-sm fill-black"
-        style={{ alignmentBaseline: "middle", textAnchor: "start" }}
-        x={10}
-        y={thickness / 2}
-      >
-        {data.name}
-      </text>
+      <rect
+        x={0}
+        y={0}
+        width={renderWidth}
+        height={thickness}
+        fill={color}
+        name={data.name}
+      />
+      {renderWidth >= MIN_BAR_WIDTH_FOR_TEXT && (
+        <text
+          className="font-sans text-sm fill-black"
+          style={{ alignmentBaseline: "middle", textAnchor: "start" }}
+          x={10}
+          y={thickness / 2}
+        >
+          {data.name}
+        </text>
+      )}
       <text
         className="font-sans text-sm fill-black"
         style={{ alignmentBaseline: "middle", textAnchor: "start" }}

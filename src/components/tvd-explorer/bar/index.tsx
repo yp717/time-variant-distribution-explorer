@@ -14,7 +14,6 @@ interface IBarProps {
   y: number;
   width: number;
   thickness: number;
-  endLabel: string;
   formatter: (value: number) => string;
   color: string;
 }
@@ -24,7 +23,6 @@ export default function Bar({
   y,
   width,
   thickness,
-  endLabel,
   formatter,
   color,
 }: IBarProps) {

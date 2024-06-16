@@ -36,7 +36,7 @@ export default function BarChart({ data, barThickness }: IBarChartProps) {
   const formatter = xScale.tickFormat();
 
   return (
-    <g transform={`translate(${0}, ${0}})`}>
+    <g transform={`translate(${0}, ${0})`}>
       {data
         .sort((a, b) => a.transistors - b.transistors)
         .map((d, index) => (

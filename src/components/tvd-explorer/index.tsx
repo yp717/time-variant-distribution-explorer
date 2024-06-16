@@ -14,6 +14,7 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
 import BarChart from "./bar-chart";
+import TVDMenu from "./tvd-menu";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.
@@ -58,16 +59,17 @@ export default function TVDExplorer() {
     return () => interval.stop();
   }, [data, paused, currentYear]);
 
-  const designerOptions = [
-    "all",
-    ...Array.from(
-      new Set(
-        Object.values(data ?? {})
-          .flat()
-          .map((d) => d.designer)
-      )
-    ),
-  ];
+  // TODO: implement filters
+  // const designerOptions = [
+  //   "all",
+  //   ...Array.from(
+  //     new Set(
+  //       Object.values(data ?? {})
+  //         .flat()
+  //         .map((d) => d.designer)
+  //     )
+  //   ),
+  // ];
 
   const xScale = d3
     .scaleLinear()
@@ -87,16 +89,6 @@ export default function TVDExplorer() {
         ref={containerRef}
       >
         <TVDHeader />
-        <button
-          className="text-gray-100 bg-white border cursor-pointer"
-          onClick={() => setPaused(!paused)}
-        >
-          {paused ? (
-            <PlayIcon className="w-6 h-6" />
-          ) : (
-            <Pause className="w-6 h-6" />
-          )}
-        </button>
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
           <svg
             className="w-full h-[600px]"
@@ -124,23 +116,22 @@ export default function TVDExplorer() {
               ]}
               barThickness={30}
             />
-            <text
-              className="font-sans text-6xl font-bold fill-neutral-900 dark:fill-neutral-100"
-              style={{ textAnchor: "end" }}
-              x={"100%"}
-              y={"100%"}
-            >
-              {currentYear}
-            </text>
           </svg>
           {data && data[currentYear] && (
             <TVDTimeline
-              data={data}
+              // TODO: remove typecast to any
+              data={data as any}
               currentYear={currentYear}
               setCurrentYear={setCurrentYear}
               mooresLawData={mooresLawData}
             />
           )}
+
+          <TVDMenu
+            paused={paused}
+            setPaused={setPaused}
+            currentYear={currentYear}
+          />
         </VisProvider>
       </div>
     </NoSSR>

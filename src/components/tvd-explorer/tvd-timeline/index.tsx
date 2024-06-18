@@ -12,7 +12,7 @@ interface ITimelineProps {
     type: string;
   }[][];
   currentYear: number;
-  setCurrentYear: (year: number) => void;
+  setCurrentYear: React.Dispatch<React.SetStateAction<number>>;
   mooresLawData: Record<number, number>;
 }
 

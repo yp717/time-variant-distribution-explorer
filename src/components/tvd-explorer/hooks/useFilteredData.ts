@@ -1,7 +1,9 @@
 import * as React from "react";
 
+import { YearToDataMap } from "./useData";
+
 export function useFilteredData(
-  data: any,
+  data: YearToDataMap | null,
   typeFilter: "All" | "CPU" | "GPU",
   designerFilter: string
 ) {

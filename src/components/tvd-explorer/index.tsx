@@ -10,9 +10,10 @@ import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
 import BarChart from "./bar-chart";
 import TVDMenu from "./tvd-menu";
-import { TVDFilters } from "./tvd-header/filters";
 import { useAnimationLoop } from "./hooks/useAnimationLoop";
 import { useFilteredData } from "./hooks/useFilteredData";
+import { useGroupBy } from "./hooks/useGroupBy";
+import TVDHeader from "./tvd-header";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.
@@ -28,8 +29,12 @@ export default function TVDExplorer() {
     "All"
   );
   const [designerFilter, setDesignerFilter] = React.useState<string>("All");
+  const [groupBy, setGroupBy] = React.useState<"none" | "type" | "designer">(
+    "none"
+  );
 
   const filteredData = useFilteredData(data, typeFilter, designerFilter);
+  const groupedData = useGroupBy(filteredData, groupBy);
 
   const dimensions = useResizeObserver(svgRef);
   const [paused, setPaused] = React.useState(false);
@@ -37,7 +42,7 @@ export default function TVDExplorer() {
   const mooresLawData = React.useMemo(() => mooresLaw(), []);
   const [currentYear, setCurrentYear] = React.useState(1970);
 
-  useAnimationLoop(data, paused, setCurrentYear);
+  useAnimationLoop(groupedData, paused, setCurrentYear);
 
   const designerOptions = [
     "All",
@@ -55,18 +60,20 @@ export default function TVDExplorer() {
   return (
     <NoSSR
       fallback={
-        <div className="w-full px-6 py-6 mx-auto text-gray-900 bg-white h-full flex items-center justify-center">
+        <div className="w-full px-6 py-6 mx-auto text-gray-900 bg-neutral-50 dark:bg-neutral-900 h-full flex items-center justify-center">
           <p>Loading...</p>
         </div>
       }
     >
       <div className="aspect-video w-full h-full" ref={containerRef}>
-        <TVDFilters
+        <TVDHeader
           typeFilter={typeFilter}
           setTypeFilter={setTypeFilter}
           designerFilter={designerFilter}
           setDesignerFilter={setDesignerFilter}
           designerOptions={designerOptions}
+          groupBy={groupBy}
+          setGroupBy={setGroupBy}
         />
 
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
@@ -79,8 +86,8 @@ export default function TVDExplorer() {
             <VerticalGrid />
             <BarChart
               data={[
-                ...((filteredData &&
-                  filteredData[currentYear]?.filter(
+                ...((groupedData &&
+                  groupedData[currentYear]?.filter(
                     (item: {
                       name: string;
                       designer: string;
@@ -105,7 +112,7 @@ export default function TVDExplorer() {
           </svg>
 
           <TVDTimeline
-            data={data as any}
+            data={groupedData as any}
             currentYear={currentYear}
             setCurrentYear={setCurrentYear}
             mooresLawData={mooresLawData}

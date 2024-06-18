@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-type YearToDataMap = Record<
+export type YearToDataMap = Record<
   number,
   {
     name: string;

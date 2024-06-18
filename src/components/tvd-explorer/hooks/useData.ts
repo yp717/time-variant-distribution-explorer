@@ -27,10 +27,9 @@ const getTransistors = (row: CSVRow): number =>
 
 /**
  * Custom hook to fetch and process data from CSV files.
- * @param filter - A string indicating the type of data to fetch: 'CPU', 'GPU', or 'all'.
  * @returns The processed data grouped by year.
  */
-export default function useData(filter: "CPU" | "GPU" | "all" = "all") {
+export default function useData() {
   const [data, setData] = React.useState<YearToDataMap | null>(null);
 
   React.useEffect(() => {
@@ -52,13 +51,9 @@ export default function useData(filter: "CPU" | "GPU" | "all" = "all") {
         })),
       ]);
 
-      // Merge data and filter based on the provided filter
-      const mergedData = datas
-        .flat()
-        .filter((item) => filter === "all" || item.type === filter);
-
       // Group by year and accumulate data
-      const grouped = mergedData
+      const grouped = datas
+        .flat()
         .sort((a, b) => a.year - b.year)
         .reduce((groups: YearToDataMap, el) => {
           if (!groups[el.year]) {
@@ -73,7 +68,7 @@ export default function useData(filter: "CPU" | "GPU" | "all" = "all") {
 
       setData(grouped);
     })();
-  }, [filter]);
+  }, []);
 
   return data;
 }

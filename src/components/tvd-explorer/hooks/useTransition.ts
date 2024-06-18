@@ -9,6 +9,7 @@ interface IUseTransitionProps {
   startValue?: number;
   easing?: (normalizedTime: number) => number;
 }
+
 export default function useTransition({
   targetValue,
   name,

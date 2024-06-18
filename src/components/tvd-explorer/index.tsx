@@ -4,7 +4,6 @@ import * as React from "react";
 import * as d3 from "d3";
 
 import { VisProvider } from "./vis-context";
-import TVDHeader from "./tvd-header";
 import TVDTimeline from "./tvd-timeline";
 import NoSSR from "./no-ssr";
 import VerticalGrid from "./VerticalGrid";
@@ -24,14 +23,15 @@ export default function TVDExplorer() {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const svgRef = React.useRef<SVGSVGElement>(null);
 
-  const [typeFilter, setTypeFilter] = React.useState<"all" | "CPU" | "GPU">(
-    "all"
+  const data = useData();
+  const [filteredData, setFilteredData] = React.useState<any>(data);
+  const [typeFilter, setTypeFilter] = React.useState<"All" | "CPU" | "GPU">(
+    "All"
   );
-  const [designerFilter, setDesignerFilter] = React.useState<string>("all");
+  const [designerFilter, setDesignerFilter] = React.useState<string>("All");
 
   const dimensions = useResizeObserver(svgRef);
   const [paused, setPaused] = React.useState(false);
-  const data = useData(typeFilter);
 
   const mooresLawData = React.useMemo(() => mooresLaw(), []);
   const [currentYear, setCurrentYear] = React.useState(1970);
@@ -54,10 +54,26 @@ export default function TVDExplorer() {
     }, 2000);
 
     return () => interval.stop();
-  }, [data, paused, setPaused]);
+  }, [data, paused]);
+
+  // Update filtered data when filters change
+  React.useEffect(() => {
+    if (data) {
+      const filtered = Object.entries(data).reduce((acc, [year, entries]) => {
+        const filteredEntries = entries.filter(
+          (item) =>
+            (typeFilter === "All" || item.type === typeFilter) &&
+            (designerFilter === "All" || item.designer === designerFilter)
+        );
+        acc[year] = filteredEntries;
+        return acc;
+      }, {} as typeof data);
+      setFilteredData(filtered);
+    }
+  }, [data, typeFilter, designerFilter]);
 
   const designerOptions = [
-    "all",
+    "All",
     ...Array.from(
       new Set(
         Object.values(data ?? {})
@@ -85,7 +101,7 @@ export default function TVDExplorer() {
               options={["All", "CPU", "GPU"]}
               value={typeFilter}
               onChange={(value) =>
-                setTypeFilter(value as "all" | "CPU" | "GPU")
+                setTypeFilter(value as "All" | "CPU" | "GPU")
               }
             />
             <TVDFilter
@@ -107,10 +123,10 @@ export default function TVDExplorer() {
             <VerticalGrid />
             <BarChart
               data={[
-                ...((data &&
-                  data[currentYear]?.filter(
+                ...((filteredData &&
+                  filteredData[currentYear]?.filter(
                     (item) =>
-                      designerFilter === "all" ||
+                      designerFilter === "All" ||
                       item.designer === designerFilter
                   )) ||
                   []),
@@ -124,7 +140,6 @@ export default function TVDExplorer() {
               ]}
               barThickness={30}
             />
-            {/* <AreaChart data={data} mooresLawData={mooresLawData} /> */}
           </svg>
 
           <TVDTimeline

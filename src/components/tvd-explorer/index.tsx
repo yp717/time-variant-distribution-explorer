@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import * as d3 from "d3";
-
 import { VisProvider } from "./vis-context";
 import TVDTimeline from "./tvd-timeline";
 import NoSSR from "./no-ssr";
@@ -12,7 +10,9 @@ import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
 import BarChart from "./bar-chart";
 import TVDMenu from "./tvd-menu";
-import TVDFilter from "./tvd-header/filter";
+import { TVDFilters } from "./tvd-header/filters";
+import { useAnimationLoop } from "./hooks/useAnimationLoop";
+import { useFilteredData } from "./hooks/useFilteredData";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.
@@ -24,11 +24,12 @@ export default function TVDExplorer() {
   const svgRef = React.useRef<SVGSVGElement>(null);
 
   const data = useData();
-  const [filteredData, setFilteredData] = React.useState<any>(data);
   const [typeFilter, setTypeFilter] = React.useState<"All" | "CPU" | "GPU">(
     "All"
   );
   const [designerFilter, setDesignerFilter] = React.useState<string>("All");
+
+  const filteredData = useFilteredData(data, typeFilter, designerFilter);
 
   const dimensions = useResizeObserver(svgRef);
   const [paused, setPaused] = React.useState(false);
@@ -36,41 +37,7 @@ export default function TVDExplorer() {
   const mooresLawData = React.useMemo(() => mooresLaw(), []);
   const [currentYear, setCurrentYear] = React.useState(1970);
 
-  // Drives the main animation loop progressing through the years
-  React.useEffect(() => {
-    if (paused) {
-      return;
-    }
-
-    const interval = d3.interval(() => {
-      setCurrentYear((year) => {
-        if (year >= 2019 || !data || !data[year + 1]) {
-          interval.stop();
-          return year;
-        }
-
-        return year + 1;
-      });
-    }, 2000);
-
-    return () => interval.stop();
-  }, [data, paused]);
-
-  // Update filtered data when filters change
-  React.useEffect(() => {
-    if (data) {
-      const filtered = Object.entries(data).reduce((acc, [year, entries]) => {
-        const filteredEntries = entries.filter(
-          (item) =>
-            (typeFilter === "All" || item.type === typeFilter) &&
-            (designerFilter === "All" || item.designer === designerFilter)
-        );
-        acc[year] = filteredEntries;
-        return acc;
-      }, {} as typeof data);
-      setFilteredData(filtered);
-    }
-  }, [data, typeFilter, designerFilter]);
+  useAnimationLoop(data, paused, setCurrentYear);
 
   const designerOptions = [
     "All",
@@ -94,24 +61,13 @@ export default function TVDExplorer() {
       }
     >
       <div className="aspect-video w-full h-full" ref={containerRef}>
-        <div className="w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 flex items-center justify-between">
-          <div className="flex gap-4">
-            <TVDFilter
-              label="Filter by Type"
-              options={["All", "CPU", "GPU"]}
-              value={typeFilter}
-              onChange={(value) =>
-                setTypeFilter(value as "All" | "CPU" | "GPU")
-              }
-            />
-            <TVDFilter
-              label="Filter by Designer"
-              options={designerOptions}
-              value={designerFilter}
-              onChange={(value) => setDesignerFilter(value)}
-            />
-          </div>
-        </div>
+        <TVDFilters
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          designerFilter={designerFilter}
+          setDesignerFilter={setDesignerFilter}
+          designerOptions={designerOptions}
+        />
 
         <VisProvider svgRef={svgRef} containerRef={containerRef}>
           <svg
@@ -125,7 +81,13 @@ export default function TVDExplorer() {
               data={[
                 ...((filteredData &&
                   filteredData[currentYear]?.filter(
-                    (item) =>
+                    (item: {
+                      name: string;
+                      designer: string;
+                      year: number;
+                      type: string;
+                      transistors: number;
+                    }) =>
                       designerFilter === "All" ||
                       item.designer === designerFilter
                   )) ||

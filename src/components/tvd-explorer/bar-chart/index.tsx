@@ -30,7 +30,7 @@ export default function BarChart({ data, barThickness }: IBarChartProps) {
     () =>
       d3
         .scaleBand()
-        .domain(d3.range(0, data.length))
+        .domain(d3.range(0, data.length).map(String))
         .paddingInner(0.2)
         .range([data.length * barThickness, 0]),
     [data.length, barThickness]
@@ -46,11 +46,12 @@ export default function BarChart({ data, barThickness }: IBarChartProps) {
           <Bar
             data={d}
             key={d.name}
-            y={yScale(index)}
+            y={yScale(String(index)) ?? 0} // Use the yScale with string index
             width={xScale(d.transistors)}
             endLabel={formatter(d.transistors)}
             thickness={yScale.bandwidth()}
             formatter={formatter}
+            // @ts-ignore
             color={chipDesignerColor(d.designer) || "black"}
           />
         ))}

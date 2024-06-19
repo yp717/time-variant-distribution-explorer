@@ -1,7 +1,7 @@
 import { MaximizeIcon, MinimizeIcon } from "lucide-react";
 
 import SimpleTooltip from "@/components/tooltip/simple-tooltip";
-import { useVis } from "../vis-context";
+import { useVis } from "../contexts/vis-context";
 
 interface IFullScreenButtonProps {
   fullScreen: boolean;

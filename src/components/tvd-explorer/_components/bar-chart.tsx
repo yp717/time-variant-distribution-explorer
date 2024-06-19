@@ -4,8 +4,8 @@ import * as React from "react";
 import * as d3 from "d3";
 
 import useChipDesignerColors from "../hooks/useChipDesignerColors";
-import Bar from "../bar";
-import { useVis } from "../vis-context";
+import Bar from "./bar";
+import { useVis } from "../contexts/vis-context";
 
 interface IBarChartProps {
   data: { name: string; designer: string; transistors: number }[];

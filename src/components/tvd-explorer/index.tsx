@@ -1,19 +1,20 @@
 "use client";
 
 import * as React from "react";
-import { VisProvider } from "./vis-context";
-import TVDTimeline from "./tvd-timeline";
-import NoSSR from "./no-ssr";
-import VerticalGrid from "./VerticalGrid";
+
+import { VisProvider } from "./contexts/vis-context";
+import TVDTimeline from "./_components/tvd-timeline";
+import NoSSR from "./_components/no-ssr";
+import VerticalGrid from "./_components/vertical-grid";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import useData from "./hooks/useData";
 import mooresLaw from "./helpers/mooresLaw";
-import BarChart from "./bar-chart";
-import TVDMenu from "./tvd-menu";
+import BarChart from "./_components/bar-chart";
+import TVDMenu from "./_components/tvd-menu";
 import { useAnimationLoop } from "./hooks/useAnimationLoop";
 import { useFilteredData } from "./hooks/useFilteredData";
 import { useGroupBy } from "./hooks/useGroupBy";
-import TVDHeader from "./tvd-header";
+import TVDHeader from "./_components/tvd-header";
 
 /**
  * Time Varying Distribution Explorer component inspired by video players and bar chart animations.

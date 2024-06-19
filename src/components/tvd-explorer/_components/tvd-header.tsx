@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import TVDFilter from "./filter";
+import TVDFilter from "./tvd-filter";
 
 interface TVDHeaderProps {
   typeFilter: "All" | "CPU" | "GPU";

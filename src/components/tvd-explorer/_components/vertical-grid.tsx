@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-import { useVis } from "./vis-context";
+import { useVis } from "../contexts/vis-context";
 
 const VerticalGrid = () => {
   const { svgDimensions } = useVis();
